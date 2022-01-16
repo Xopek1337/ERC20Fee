@@ -1,22 +1,26 @@
+// npx hardhat run scripts/01_deploy_FeeToken.js --network bsctestnet
 const network = hre.network.name;
 const fs = require('fs');
 const {
-  ethers: {
-    BigNumber,
-  },
+  ethers
 } = require("hardhat");
 
 async function main() {
   const namesAndAddresses = {};
   const [deployer] = await hre.ethers.getSigners();
 
-  const feeTokenInstance = await ethers.getContractFactory('FeeToken');
-  const feeToken = await feeTokenInstance.deploy(process.env.OWNER_TOKENS, process.env.WALLET,
-  process.env.TOKEN_NAME, process.env.TOKEN_SYMBOL, process.env.TOTAL_SUPPLY);
-
   console.log('Network', network);
   console.log('Deploying contracts with the account:', deployer.address);
   console.log('Account balance:', (await deployer.getBalance()).toString());
+
+  const feeTokenInstance = await ethers.getContractFactory('FeeToken');
+  const feeToken = await feeTokenInstance.deploy(
+    process.env.TOKEN_OWNER,
+    process.env.WALLET,
+    process.env.TOKEN_NAME,
+    process.env.TOKEN_SYMBOL,
+    process.env.TOTAL_SUPPLY
+  );
 
   console.log(`Smart contract has been deployed to: ${feeToken.address}`);
 

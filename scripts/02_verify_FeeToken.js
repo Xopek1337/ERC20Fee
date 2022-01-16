@@ -1,10 +1,6 @@
+// npx hardhat run scripts/02_verify_FeeToken.js --network bsctestnet
 const network = hre.network.name;
 const fs = require('fs');
-const {
-  ethers: {
-    BigNumber,
-  },
-} = require("hardhat");
 
 async function main() {
   const dir = './networks/';
@@ -14,7 +10,13 @@ async function main() {
   try {
     await hre.run('verify:verify', {
       address: data.feeToken,
-      constructorArguments: [process.env.OWNER_TOKENS, process.env.WALLET, process.env.TOKEN_NAME, process.env.TOKEN_SYMBOL, process.env.TOTAL_SUPPLY],
+      constructorArguments: [
+        process.env.TOKEN_OWNER,
+        process.env.WALLET,
+        process.env.TOKEN_NAME,
+        process.env.TOKEN_SYMBOL,
+        process.env.TOTAL_SUPPLY
+      ],
       contract: 'contracts/FeeToken.sol:FeeToken',
     });
   } catch (e) {
