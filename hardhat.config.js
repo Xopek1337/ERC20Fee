@@ -6,7 +6,15 @@ require("dotenv").config();
 require("hardhat-deploy");
 
 module.exports = {
-  solidity: "0.8.11",
+  solidity: {
+    version: "0.8.11",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 200
+      }
+    }
+  },
   networks: {
     mainnet: {
       url: process.env.ETHERIUM_MAINNET_URL,

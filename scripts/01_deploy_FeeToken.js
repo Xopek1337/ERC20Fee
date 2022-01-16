@@ -9,11 +9,10 @@ const {
 async function main() {
   const namesAndAddresses = {};
   const [deployer] = await hre.ethers.getSigners();
-  const totalSupply = await BigNumber.from("12884901889000000000000000000");
 
   const feeTokenInstance = await ethers.getContractFactory('FeeToken');
   const feeToken = await feeTokenInstance.deploy(process.env.OWNER_TOKENS, process.env.WALLET,
-  process.env.TOKEN_NAME, process.env.TOKEN_SYMBOL, totalSupply);
+  process.env.TOKEN_NAME, process.env.TOKEN_SYMBOL, process.env.TOTAL_SYPPLY);
 
   console.log('Network', network);
   console.log('Deploying contracts with the account:', deployer.address);

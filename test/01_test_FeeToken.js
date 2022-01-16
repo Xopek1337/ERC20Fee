@@ -12,11 +12,9 @@ describe('feeTokenTest', () => {
   });
   describe("Testing constructor", () => {
     it('should set right constructor parametres', async () => {
-      const totalSupply = await BigNumber.from("12884901889000000000000000000");
-
       const feeTokenInstance = await ethers.getContractFactory('FeeToken');
       feeToken = await feeTokenInstance.deploy(ownerTokens.address, wallet.address, 
-        process.env.TOKEN_NAME, process.env.TOKEN_SYMBOL, totalSupply);
+        process.env.TOKEN_NAME, process.env.TOKEN_SYMBOL, process.env.TOTAL_SYPPLY);
 
       const [walletAfterDeploy, name, symbol] = await Promise.all([
         feeToken.wallet(),
@@ -32,17 +30,16 @@ describe('feeTokenTest', () => {
       expect(walletAfterDeploy).to.be.equal(wallet.address);
       expect(name).to.be.equal(process.env.TOKEN_NAME);
       expect(symbol).to.be.equal(process.env.TOKEN_SYMBOL);
-      expect(endingOwnerTokensBalance).to.equal(totalSupply);
+      expect(endingOwnerTokensBalance).to.equal(process.env.TOTAL_SYPPLY);
       expect(fee).to.equal(25);
       expect(denom).to.equal(10000);
     });
   });
   describe("Other tests", () => {
     beforeEach(async () => {
-      const totalSupply = await BigNumber.from("12884901889000000000000000000");
       const feeTokenInstance = await ethers.getContractFactory('FeeToken');
       feeToken = await feeTokenInstance.deploy(ownerTokens.address, wallet.address, 
-      process.env.TOKEN_NAME, process.env.TOKEN_SYMBOL, totalSupply);
+      process.env.TOKEN_NAME, process.env.TOKEN_SYMBOL, process.env.TOTAL_SYPPLY);
     });
     it('should transfer', async () => {
       let amount = await BigNumber.from("100000");

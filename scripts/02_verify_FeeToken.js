@@ -7,8 +7,6 @@ const {
 } = require("hardhat");
 
 async function main() {
-  const totalSupply = await BigNumber.from("12884901889000000000000000000");
-
   const dir = './networks/';
   const fileName = 'FeeToken_' + `${network}.json`;
   const data = JSON.parse(await fs.readFileSync(dir + fileName, { encoding: 'utf8' }));
@@ -16,7 +14,7 @@ async function main() {
   try {
     await hre.run('verify:verify', {
       address: data.feeToken,
-      constructorArguments: [process.env.OWNER_TOKENS, process.env.WALLET, process.env.TOKEN_NAME, process.env.TOKEN_SYMBOL, totalSupply],
+      constructorArguments: [process.env.OWNER_TOKENS, process.env.WALLET, process.env.TOKEN_NAME, process.env.TOKEN_SYMBOL, process.env.TOTAL_SYPPLY],
       contract: 'contracts/FeeToken.sol:FeeToken',
     });
   } catch (e) {

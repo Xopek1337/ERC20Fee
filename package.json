@@ -16,7 +16,7 @@
     "fee",
     "bsc"
   ],
-  "author": "bright lynx team",
+  "author": "Xopek Avtozavodsky and Tolyan Regionovedov",
   "license": "MIT",
   "engines": {
     "npm": ">=6.12.0",
