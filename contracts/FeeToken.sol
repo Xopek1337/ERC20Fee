@@ -34,7 +34,10 @@ contract FeeToken is ERC20, Ownable {
     /// @return The bool value.
 
     function _setFee(uint256 newFee_) external onlyOwner returns (bool) {
-        require(newFee_ < fee, 'FeeToken::_setFee: the specified fee is more than the previous one');
+        require(
+            newFee_ < fee,
+            "FeeToken::_setFee: the specified fee is more than the previous one"
+        );
         uint256 oldFee = fee;
         fee = newFee_;
 
