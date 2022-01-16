@@ -21,11 +21,11 @@ contract FeeToken is ERC20, Ownable {
         address wallet_,
         string memory name_,
         string memory symbol_, 
-        uint256 totalSupply
+        uint256 totalSupply_
     ) ERC20(name_, symbol_) {
         wallet = wallet_;
         
-        _mint(account_, totalSupply);
+        _mint(account_, totalSupply_);
 
         emit NewWallet(address(0), wallet);
     }
@@ -36,8 +36,9 @@ contract FeeToken is ERC20, Ownable {
     function _setFee(uint256 newFee_) external onlyOwner returns (bool) {
         require(
             newFee_ < fee,
-            "FeeToken::_setFee: the specified fee is more than the previous one"
+            "FeeToken::_setFee: The newFee_ must be less than the current fee"
         );
+
         uint256 oldFee = fee;
         fee = newFee_;
 
@@ -46,10 +47,15 @@ contract FeeToken is ERC20, Ownable {
         return true;
     }
 
-    /// @notice The function sets a new wallet.
-    /// @param newWallet_ The new value to store.
+    /// @notice The function sets a new wallet address.
+    /// @param newWallet_ The new wallet address.
     /// @return The bool value.
     function _setWallet(address newWallet_) external onlyOwner returns (bool) {
+        require(
+            newWallet_ != address(0),
+            "FeeToken::_setWallet: The newWallet_ address must not be equal 0"
+        );
+
         address oldWallet = wallet;
         wallet = newWallet_;
 
