@@ -129,5 +129,11 @@ describe('feeTokenTest', () => {
         feeToken.connect(user1)._setWallet(user1.address)
       ).to.be.revertedWith('Ownable: caller is not the owner');
     });
+
+    it('should not set a zero address', async () => {
+      await expect(
+        feeToken._setWallet('0x0000000000000000000000000000000000000000')
+      ).to.be.revertedWith('FeeToken::_setWallet: The newWallet_ address must not be equal 0');
+    });
   });
 });
