@@ -7,40 +7,50 @@ const {
 } = require("hardhat");
 
 describe('feeTokenTest', () => {
+  let deployer, tokenOwner, wallet, user1, user2;
+  let feeToken;
+  
   beforeEach(async () => {
-    [deployer, ownerTokens, wallet, addr1, addr2] = await ethers.getSigners();
+    [deployer, tokenOwner, wallet, user1, user1] = await ethers.getSigners();
   });
-  describe("Testing constructor", () => {
-    it('should set right constructor parametres', async () => {
-      const feeTokenInstance = await ethers.getContractFactory('FeeToken');
-      feeToken = await feeTokenInstance.deploy(ownerTokens.address, wallet.address, 
-        process.env.TOKEN_NAME, process.env.TOKEN_SYMBOL, process.env.TOTAL_SUPPLY);
 
-      const [walletAfterDeploy, name, symbol] = await Promise.all([
+  describe("Constructor", () => {
+    it('Check values', async () => {
+      const feeTokenInstance = await ethers.getContractFactory('FeeToken');
+      feeToken = await feeTokenInstance.deploy(
+        tokenOwner.address,
+        wallet.address,
+        process.env.TOKEN_NAME,
+        process.env.TOKEN_SYMBOL,
+        process.env.TOTAL_SUPPLY
+      );
+
+      const [walletAddress, name, symbol] = await Promise.all([
         feeToken.wallet(),
         feeToken.name(),
         feeToken.symbol(),
       ]);
 
-      const endingOwnerTokensBalance = await feeToken.balanceOf(ownerTokens.address);
-      
+      const tokenOwnerBalance = await feeToken.balanceOf(tokenOwner.address);
       const fee = await feeToken.fee();
       const denom = await feeToken.denom();
 
-      expect(walletAfterDeploy).to.be.equal(wallet.address);
+      expect(walletAddress).to.be.equal(wallet.address);
       expect(name).to.be.equal(process.env.TOKEN_NAME);
       expect(symbol).to.be.equal(process.env.TOKEN_SYMBOL);
-      expect(endingOwnerTokensBalance).to.equal(process.env.TOTAL_SUPPLY);
+      expect(tokenOwnerBalance).to.equal(process.env.TOTAL_SUPPLY);
       expect(fee).to.equal(25);
       expect(denom).to.equal(10000);
     });
   });
+
   describe("Other tests", () => {
     beforeEach(async () => {
       const feeTokenInstance = await ethers.getContractFactory('FeeToken');
-      feeToken = await feeTokenInstance.deploy(ownerTokens.address, wallet.address, 
+      feeToken = await feeTokenInstance.deploy(tokenOwner.address, wallet.address, 
       process.env.TOKEN_NAME, process.env.TOKEN_SYMBOL, process.env.TOTAL_SUPPLY);
     });
+
     it('should transfer', async () => {
       let amount = await BigNumber.from("100000");
       let fee = 25;
@@ -48,13 +58,13 @@ describe('feeTokenTest', () => {
       let taxFee = amount.mul(fee).div(denom);
       let net = amount.sub(taxFee);
 
-      const startOwnerTokensBalance = await feeToken.balanceOf(ownerTokens.address);
+      const startOwnerTokensBalance = await feeToken.balanceOf(tokenOwner.address);
       const startWalletBalance = await feeToken.balanceOf(wallet.address);
       const startRecipientBalance = await feeToken.balanceOf(addr1.address);
 
-      await feeToken.connect(ownerTokens).transfer(addr1.address, amount);
+      await feeToken.connect(tokenOwner).transfer(addr1.address, amount);
 
-      const endingOwnerTokensBalance = await feeToken.balanceOf(ownerTokens.address);
+      const endingOwnerTokensBalance = await feeToken.balanceOf(tokenOwner.address);
       const endingWalletBalance = await feeToken.balanceOf(wallet.address);
       const endingRecipientBalance = await feeToken.balanceOf(addr1.address);
 
@@ -83,14 +93,15 @@ describe('feeTokenTest', () => {
     });
 
     it('should set a new wallet', async () => {
-      [newWallet] = await ethers.getSigners();
       const oldWallet = await feeToken.wallet();
+      const walletAddress = user1.address;
 
-      const tx = await feeToken._setWallet(newWallet.address);
-      const endingWallet = await feeToken.wallet();
+      const tx = await feeToken._setWallet(walletAddress);
+      // check tx is success
+      const newWallet = await feeToken.wallet();
 
-      expect(newWallet.address).to.equal(endingWallet);
-      expect(tx).to.emit(feeToken, "NewWallet").withArgs(oldWallet, endingWallet);
+      expect(newWallet).to.equal(walletAddress);
+      expect(tx).to.emit(feeToken, "NewWallet").withArgs(oldWallet, user1);
     });
   });
 });
