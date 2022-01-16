@@ -20,11 +20,11 @@ contract FeeToken is ERC20, Ownable {
         address account_,
         address wallet_,
         string memory name_,
-        string memory symbol_
+        string memory symbol_, uint256 totalSupply
     ) ERC20(name_, symbol_) {
         wallet = wallet_;
-
-        _mint(account_, 12884901889e18);
+        
+        _mint(account_, totalSupply);
 
         emit NewWallet(address(0), wallet);
     }

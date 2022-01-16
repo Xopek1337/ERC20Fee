@@ -9,7 +9,7 @@ module.exports = {
   solidity: "0.8.11",
   networks: {
     mainnet: {
-      url: process.env.ETHERIUM_MAINNTET_URL,
+      url: process.env.ETHERIUM_MAINNET_URL,
       accounts: [process.env.PRIVATE_KEY]
     },
     bsctestnet: {

@@ -12,18 +12,20 @@ describe('feeTokenTest', () => {
   });
   describe("Testing constructor", () => {
     it('should set right constructor parametres', async () => {
+      const totalSupply = await BigNumber.from("12884901889000000000000000000");
+
       const feeTokenInstance = await ethers.getContractFactory('FeeToken');
       feeToken = await feeTokenInstance.deploy(ownerTokens.address, wallet.address, 
-        process.env.TOKEN_NAME, process.env.TOKEN_SYMBOL);
+        process.env.TOKEN_NAME, process.env.TOKEN_SYMBOL, totalSupply);
 
       const [walletAfterDeploy, name, symbol] = await Promise.all([
         feeToken.wallet(),
         feeToken.name(),
         feeToken.symbol(),
       ]);
-      
+
       const endingOwnerTokensBalance = await feeToken.balanceOf(ownerTokens.address);
-      const totalSupply = await BigNumber.from("12884901889000000000000000000");
+      
       const fee = await feeToken.fee();
       const denom = await feeToken.denom();
 
@@ -37,9 +39,10 @@ describe('feeTokenTest', () => {
   });
   describe("Other tests", () => {
     beforeEach(async () => {
+      const totalSupply = await BigNumber.from("12884901889000000000000000000");
       const feeTokenInstance = await ethers.getContractFactory('FeeToken');
       feeToken = await feeTokenInstance.deploy(ownerTokens.address, wallet.address, 
-      process.env.TOKEN_NAME, process.env.TOKEN_SYMBOL);
+      process.env.TOKEN_NAME, process.env.TOKEN_SYMBOL, totalSupply);
     });
     it('should transfer', async () => {
       let amount = await BigNumber.from("100000");
@@ -52,7 +55,7 @@ describe('feeTokenTest', () => {
       const startWalletBalance = await feeToken.balanceOf(wallet.address);
       const startRecipientBalance = await feeToken.balanceOf(addr1.address);
 
-      let tx = await feeToken.connect(ownerTokens).transfer(addr1.address, amount);
+      await feeToken.connect(ownerTokens).transfer(addr1.address, amount);
 
       const endingOwnerTokensBalance = await feeToken.balanceOf(ownerTokens.address);
       const endingWalletBalance = await feeToken.balanceOf(wallet.address);
