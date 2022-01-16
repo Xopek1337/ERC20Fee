@@ -6,7 +6,7 @@ const {
   },
 } = require("hardhat");
 
-describe('feeTokenTest', () => {
+describe('Fee Token Tests', () => {
   let owner, tokenOwner, wallet, user1;
   let feeToken;
   
